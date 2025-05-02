@@ -159,35 +159,36 @@
       border-bottom: none;
     }
 
-    .add-form {
-      display: none;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
-      background: var(--glass);
-      padding: 0.5rem;
-      border-radius: var(--radius);
-    }
+     .add-form {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    background: var(--glass);
+    padding: 0.5rem;
+    border-radius: var(--radius);
+  }
 
-    .add-form input {
-      margin: 0.25rem;
-      padding: 0.3rem;
-      border-radius: 6px;
-      border: 1px solid #444;
-      background: #1a1a1a;
-      color: var(--text-light);
-      font-size: 0.9rem;
-    }
+  .add-form input.name-input {
+    padding: 0.3rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #1a1a1a;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    flex: 2;
+    min-width: 120px;
+  }
 
-    .add-form button {
-      padding: 0.3rem 0.8rem;
-      border: 1px solid var(--highlight);
-      background: black;
-      color: var(--highlight);
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
+  .add-form input.amount-input {
+    padding: 0.3rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #1a1a1a;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 60px;
+  }
 
     .plus-button {
       font-size: 1.2rem;
@@ -342,12 +343,12 @@
 
       const nameInput = document.createElement("input");
       nameInput.placeholder = "Expense name";
-      nameInput.size = 10;
+      nameInput.className = "name-input";
 
       const amtInput = document.createElement("input");
       amtInput.placeholder = "$";
-      amtInput.size = 6;
       amtInput.type = "number";
+      amtInput.className = "amount-input";
 
       const addBtn = document.createElement("button");
       addBtn.textContent = "Add";
