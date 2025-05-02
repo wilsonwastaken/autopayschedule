@@ -96,8 +96,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       flex-grow: 1;
       overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
 
     @media (min-width: 769px) {
@@ -141,6 +139,9 @@
       display: none;
       flex-wrap: wrap;
       margin-top: 0.5rem;
+      background: var(--glass);
+      padding: 0.5rem;
+      border-radius: var(--radius);
     }
 
     .add-form input {
@@ -155,9 +156,9 @@
 
     .add-form button {
       padding: 0.3rem 0.8rem;
-      border: none;
-      background: var(--highlight);
-      color: black;
+      border: 1px solid var(--highlight);
+      background: black;
+      color: var(--highlight);
       border-radius: var(--radius);
       cursor: pointer;
       font-weight: bold;
@@ -194,7 +195,7 @@
 
     .monthly-total {
       margin-top: 2rem;
-      background: var(--card);
+      background: rgba(0,255,180,0.1);
       padding: 1rem;
       border-radius: var(--radius);
       text-align: center;
@@ -204,14 +205,15 @@
     }
 
     .export-button {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background: var(--highlight);
-      color: black;
-      border: none;
+      margin: 1.5rem auto 0;
+      padding: 0.5rem 1.2rem;
+      background: black;
+      color: var(--highlight);
+      border: 1px solid var(--highlight);
       border-radius: var(--radius);
       cursor: pointer;
       font-weight: bold;
+      display: block;
     }
   </style>
 </head>
@@ -273,7 +275,7 @@
       if (expenses.length > 0) {
         const summary = document.createElement("div");
         summary.className = "expense-summary";
-        summary.textContent = expenses.map(e => e.name).slice(0, 2).join(", ") + (expenses.length > 2 ? ", ..." : "");
+        summary.textContent = expenses.map(e => e.name).join(", ");
 
         expenses.forEach(e => {
           const row = document.createElement("div");
