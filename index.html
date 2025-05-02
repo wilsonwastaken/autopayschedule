@@ -21,7 +21,8 @@
       margin: 0;
       padding: 1rem;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
 
     .container {
@@ -61,7 +62,7 @@
     }
 
     .today {
-      background-color: rgba(0, 199, 255, 0.1) !important;
+      background-color: rgba(0, 199, 255, 0.2) !important;
       font-weight: bold;
     }
 
@@ -78,6 +79,13 @@
       margin: 0 auto;
     }
 
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
     .expense-summary {
       background-color: var(--glass);
       padding: 0.4rem 0.6rem;
@@ -86,10 +94,11 @@
       display: inline-block;
       backdrop-filter: blur(6px);
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      max-width: 140px;
+      flex-grow: 1;
+      max-width: 100%;
       overflow: hidden;
-      text-overflow: ellipsis;
       white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     .total {
@@ -101,17 +110,25 @@
       white-space: nowrap;
     }
 
-    .dropdown, .add-form {
-      margin-top: 0.5rem;
+    .dropdown {
+      display: none;
       background: var(--glass);
       border-radius: var(--radius);
       padding: 0.5rem;
-      display: none;
       backdrop-filter: blur(6px);
+      margin-top: 0.5rem;
     }
 
-    .dropdown p {
-      margin: 0.25rem 0;
+    .dropdown-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.95rem;
+    }
+
+    .dropdown-row:last-child {
+      border-bottom: none;
     }
 
     .add-form input {
@@ -147,7 +164,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-top: 0.6rem;
+      margin-top: 0.1rem;
       box-shadow: 0 0 6px rgba(0, 199, 255, 0.2);
       backdrop-filter: blur(5px);
       transition: transform 0.1s ease;
@@ -163,24 +180,31 @@
       gap: 0.5rem;
     }
 
+    .monthly-total {
+      margin-top: 2rem;
+      background: var(--card);
+      padding: 1rem;
+      border-radius: var(--radius);
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 0 32px rgba(0,255,255,0.1);
+    }
+
+    .export-button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--highlight);
+      color: black;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
     @media (max-width: 768px) {
-      .container {
-        width: 100%;
-        padding: 0.5rem;
-      }
-      .title-box h1 {
-        font-size: 1.4rem;
-      }
-      .expense-summary,
-      .total,
-      .add-form input,
-      .add-form button {
-        font-size: 1.1rem;
-      }
-      .plus-button {
-        width: 3rem;
-        height: 3rem;
-        font-size: 1.9rem;
+      .expense-summary {
+        max-width: 140px;
       }
     }
   </style>
@@ -193,15 +217,35 @@
     <table id="calendar">
       <tr><th>Date</th><th>Expenses</th><th>Total</th></tr>
     </table>
+    <div class="monthly-total" id="monthlyTotal"></div>
+    <button class="export-button" onclick="exportData()">Export to CSV</button>
   </div>
 
   <script>
     const today = new Date().getDate();
     const calendar = document.getElementById("calendar");
+    const totalDisplay = document.getElementById("monthlyTotal");
     let allExpenses = JSON.parse(localStorage.getItem("expensesByDay")) || {};
+    let totalMonth = 0;
 
     function saveExpenses() {
       localStorage.setItem("expensesByDay", JSON.stringify(allExpenses));
+    }
+
+    function exportData() {
+      let csv = "Day,Name,Amount\n";
+      for (let d = 1; d <= 31; d++) {
+        const entries = allExpenses[d] || [];
+        for (const e of entries) {
+          csv += `${d},${e.name},${e.amount}\n`;
+        }
+      }
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "monthly-autodraft.csv";
+      a.click();
     }
 
     function updateRow(day, row) {
@@ -214,28 +258,40 @@
       const wrapper = document.createElement("div");
       wrapper.className = "summary-container";
 
+      const summaryRow = document.createElement("div");
+      summaryRow.className = "summary-row";
+
       if (expenses.length > 0) {
         const summary = document.createElement("div");
         summary.className = "expense-summary";
         summary.textContent = expenses.map(e => e.name).slice(0, 2).join(", ") + (expenses.length > 2 ? ", ..." : "");
-        
+
         const dropdown = document.createElement("div");
         dropdown.className = "dropdown";
+
         expenses.forEach(e => {
-          const p = document.createElement("p");
-          p.textContent = `${e.name} $${e.amount}`;
-          dropdown.appendChild(p);
+          const row = document.createElement("div");
+          row.className = "dropdown-row";
+
+          const name = document.createElement("span");
+          name.textContent = e.name;
+
+          const amt = document.createElement("span");
+          amt.textContent = `$${e.amount}`;
+
+          row.appendChild(name);
+          row.appendChild(amt);
+          dropdown.appendChild(row);
         });
 
         summary.onclick = () => {
           dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
         };
 
-        wrapper.appendChild(summary);
+        summaryRow.appendChild(summary);
         wrapper.appendChild(dropdown);
       }
 
-      // Add + button and form
       const plusBtn = document.createElement("button");
       plusBtn.className = "plus-button";
       plusBtn.textContent = "+";
@@ -262,23 +318,20 @@
         if (!allExpenses[day]) allExpenses[day] = [];
         allExpenses[day].push({ name, amount });
         saveExpenses();
-        updateRow(day, row);
+        location.reload();
       };
 
       addForm.appendChild(nameInput);
       addForm.appendChild(amtInput);
       addForm.appendChild(addBtn);
-      wrapper.appendChild(plusBtn);
+
+      summaryRow.appendChild(plusBtn);
+      wrapper.appendChild(summaryRow);
       wrapper.appendChild(addForm);
-
-      plusBtn.onclick = () => {
-        addForm.style.display = addForm.style.display === "none" ? "block" : "none";
-      };
-
       summaryCell.appendChild(wrapper);
 
-      // Just the dollar total
       const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      totalMonth += total;
       if (total > 0) {
         const totalEl = document.createElement("div");
         totalEl.className = "total";
@@ -287,9 +340,13 @@
       }
     }
 
+    let todayRow;
     for (let day = 1; day <= 31; day++) {
       const row = calendar.insertRow();
-      if (day === today) row.classList.add("today");
+      if (day === today) {
+        row.classList.add("today");
+        todayRow = row;
+      }
 
       const cellDate = row.insertCell();
       const dateBubble = document.createElement("div");
@@ -302,6 +359,9 @@
 
       updateRow(day, row);
     }
+
+    totalDisplay.textContent = `Total This Month: $${totalMonth}`;
+    if (todayRow) todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
   </script>
 </body>
 </html>
