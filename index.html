@@ -5,177 +5,191 @@
   <title>Monthly Auto-Draft Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-   :root {
-  --bg-dark: #0d0d0d;
-  --card: rgba(255, 255, 255, 0.05);
-  --text-light: #d0d0d0;
-  --glass: rgba(255, 255, 255, 0.1);
-  --highlight: #00c7ff;
-  --radius: 14px;
-}
+    :root {
+      --bg-dark: #0d0d0d;
+      --card: rgba(255, 255, 255, 0.05);
+      --text-light: #d0d0d0;
+      --glass: rgba(255, 255, 255, 0.1);
+      --highlight: #00c7ff;
+      --radius: 14px;
+    }
 
-body {
-  font-family: system-ui, sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-light);
-  margin: 0;
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
-}
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      margin: 0;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+    }
 
-.container {
-  width: 100%;
-  max-width: 900px;
-}
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
 
-.title-box {
-  background: black;
-  border-radius: var(--radius);
-  padding: 1rem;
-  text-align: center;
-  box-shadow: 0px 0px 64px rgba(163, 243, 255, 0.33);
-  margin-bottom: 1rem;
-}
+    .title-box {
+      background: black;
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0px 0px 64px rgba(163, 243, 255, 0.33);
+      margin-bottom: 1rem;
+    }
 
-.title-box h1 {
-  margin: 0;
-}
+    .title-box h1 {
+      margin: 0;
+    }
 
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 0.4rem;
-}
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.4rem;
+    }
 
-th, td {
-  padding: 0.4rem 0.6rem;
-  text-align: left;
-  vertical-align: middle;
-}
+    th, td {
+      padding: 0.4rem 0.6rem;
+      text-align: left;
+      vertical-align: middle;
+    }
 
-tr {
-  background-color: var(--card);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
+    tr {
+      background-color: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
 
-.today {
-  background-color: rgba(0, 199, 255, 0.1) !important;
-  font-weight: bold;
-}
+    .today {
+      background-color: rgba(0, 199, 255, 0.1) !important;
+      font-weight: bold;
+    }
 
-.date-bubble {
-  background-color: rgba(255,255,255,0.1);
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1rem;
-  margin: 0 auto;
-}
+    .date-bubble {
+      background-color: rgba(255,255,255,0.1);
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      margin: 0 auto;
+    }
 
-.expense-summary {
-  background-color: var(--glass);
-  padding: 0.4rem 0.6rem;
-  border-radius: var(--radius);
-  cursor: pointer;
-  display: inline-block;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  max-width: 140px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+    .expense-summary {
+      background-color: var(--glass);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: inline-block;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-.total {
-  background-color: rgba(0,255,180,0.08);
-  padding: 0.4rem 0.6rem;
-  border-radius: var(--radius);
-  font-weight: bold;
-  display: inline-block;
-  white-space: nowrap;
-}
+    .total {
+      background-color: rgba(0,255,180,0.08);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius);
+      font-weight: bold;
+      display: inline-block;
+      white-space: nowrap;
+    }
 
-.dropdown, .add-form {
-  margin-top: 0.5rem;
-  background: var(--glass);
-  border-radius: var(--radius);
-  padding: 0.5rem;
-  display: none;
-  backdrop-filter: blur(6px);
-}
+    .dropdown, .add-form {
+      margin-top: 0.5rem;
+      background: var(--glass);
+      border-radius: var(--radius);
+      padding: 0.5rem;
+      display: none;
+      backdrop-filter: blur(6px);
+    }
 
-.dropdown p {
-  margin: 0.25rem 0;
-}
+    .dropdown p {
+      margin: 0.25rem 0;
+    }
 
-.add-form input {
-  margin: 0.25rem;
-  padding: 0.3rem;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background: #1a1a1a;
-  color: var(--text-light);
-  font-size: 0.9rem;
-}
+    .add-form input {
+      margin: 0.25rem;
+      padding: 0.3rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #1a1a1a;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
 
-.add-form button {
-  padding: 0.3rem 0.8rem;
-  border: none;
-  background: var(--highlight);
-  color: black;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
+    .add-form button {
+      padding: 0.3rem 0.8rem;
+      border: none;
+      background: var(--highlight);
+      color: black;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
 
-.plus-button {
-  font-size: 1.6rem;
-  width: 2.6rem;
-  height: 2.6rem;
-  background: var(--glass);
-  color: var(--highlight);
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 8px rgba(0, 199, 255, 0.2);
-  backdrop-filter: blur(5px);
-}
+    .plus-button {
+      font-size: 1.2rem;
+      width: 2.2rem;
+      height: 2.2rem;
+      background: rgba(0, 199, 255, 0.15);
+      color: #00c7ff;
+      border: 1px solid #00c7ff;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.6rem;
+      box-shadow: 0 0 6px rgba(0, 199, 255, 0.2);
+      backdrop-filter: blur(5px);
+      transition: transform 0.1s ease;
+    }
 
-@media (max-width: 768px) {
-  .container {
-    width: 100%;
-    padding: 0.5rem;
-  }
-  .title-box h1 {
-    font-size: 1.4rem;
-  }
-  .expense-summary,
-  .total,
-  .add-form input,
-  .add-form button {
-    font-size: 1.1rem;
-  }
-  .plus-button {
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.9rem;
-  }
-}
+    .plus-button:hover {
+      transform: scale(1.1);
+    }
+
+    .summary-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        padding: 0.5rem;
+      }
+      .title-box h1 {
+        font-size: 1.4rem;
+      }
+      .expense-summary,
+      .total,
+      .add-form input,
+      .add-form button {
+        font-size: 1.1rem;
+      }
+      .plus-button {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.9rem;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Monthly Auto-Draft Schedule</h1>
+    <div class="title-box">
+      <h1>Monthly Auto-Draft Schedule</h1>
+    </div>
     <table id="calendar">
       <tr><th>Date</th><th>Expenses</th><th>Total</th></tr>
     </table>
@@ -197,7 +211,9 @@ tr {
       summaryCell.innerHTML = '';
       totalCell.innerHTML = '';
 
-      // Summary dropdown
+      const wrapper = document.createElement("div");
+      wrapper.className = "summary-container";
+
       if (expenses.length > 0) {
         const summary = document.createElement("div");
         summary.className = "expense-summary";
@@ -215,26 +231,15 @@ tr {
           dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
         };
 
-        summaryCell.appendChild(summary);
-        summaryCell.appendChild(dropdown);
+        wrapper.appendChild(summary);
+        wrapper.appendChild(dropdown);
       }
 
-      // Total
-      const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
-      if (total > 0) {
-        const totalEl = document.createElement("div");
-        totalEl.className = "total";
-        totalEl.textContent = `$${total}`;
-        totalCell.appendChild(totalEl);
-      }
-
-      // "+" button
+      // Add + button and form
       const plusBtn = document.createElement("button");
       plusBtn.className = "plus-button";
       plusBtn.textContent = "+";
-      summaryCell.appendChild(plusBtn);
 
-      // Add form
       const addForm = document.createElement("div");
       addForm.className = "add-form";
 
@@ -263,25 +268,37 @@ tr {
       addForm.appendChild(nameInput);
       addForm.appendChild(amtInput);
       addForm.appendChild(addBtn);
-      summaryCell.appendChild(addForm);
+      wrapper.appendChild(plusBtn);
+      wrapper.appendChild(addForm);
 
       plusBtn.onclick = () => {
         addForm.style.display = addForm.style.display === "none" ? "block" : "none";
       };
+
+      summaryCell.appendChild(wrapper);
+
+      // Just the dollar total
+      const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      if (total > 0) {
+        const totalEl = document.createElement("div");
+        totalEl.className = "total";
+        totalEl.textContent = `$${total}`;
+        totalCell.appendChild(totalEl);
+      }
     }
 
     for (let day = 1; day <= 31; day++) {
       const row = calendar.insertRow();
       if (day === today) row.classList.add("today");
 
-    const cellDate = row.insertCell();
-    const dateBubble = document.createElement("div");
-    dateBubble.className = "date-bubble";
-    dateBubble.textContent = day;
-    cellDate.appendChild(dateBubble);
+      const cellDate = row.insertCell();
+      const dateBubble = document.createElement("div");
+      dateBubble.className = "date-bubble";
+      dateBubble.textContent = day;
+      cellDate.appendChild(dateBubble);
 
-      row.insertCell(); // Expenses cell
-      row.insertCell(); // Total cell
+      row.insertCell(); // Expenses
+      row.insertCell(); // Total
 
       updateRow(day, row);
     }
