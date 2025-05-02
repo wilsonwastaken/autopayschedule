@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <title>Monthly Auto-Draft Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="autopay.png" type="image/png">
+  <meta name="description" content="AutoPay Schedule – Track your expenses easily and locally. Bookmark to save your progress.">
+  <meta property="og:title" content="AutoPay Schedule">
+  <meta property="og:description" content="Track your expenses in a simple web app. All data is saved in your browser.">
+  <meta property="og:image" content="autopay.png">
+  <meta name="theme-color" content="#000000">
   <style>
     :root {
       --bg-dark: #0d0d0d;
@@ -28,6 +34,24 @@
     .container {
       width: 100%;
       max-width: 900px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo img {
+      width: 33%;
+      max-width: 200px;
+    }
+
+    .notice {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+      max-width: 600px;
+      margin: 10px auto 30px auto;
     }
 
     .title-box {
@@ -218,6 +242,14 @@
   </style>
 </head>
 <body>
+  <div class="logo">
+    <img src="autopay.png" alt="AutoPay Logo">
+  </div>
+  <div class="notice">
+    Bookmark this page to come back later.<br>
+    If you clear cookies or browser data, all inputs will be lost.<br>
+    Use the "Export to CSV" button to back up your data.
+  </div>
   <div class="container">
     <div class="title-box">
       <h1>Monthly Auto-Draft Schedule</h1>
@@ -227,6 +259,7 @@
     </table>
     <div class="monthly-total" id="monthlyTotal"></div>
     <button class="export-button" onclick="exportData()">Export to CSV</button>
+    <input type="file" id="csv-upload" accept=".csv" style="margin: 1rem auto; display: block; color: white;" />
   </div>
 
   <script>
@@ -255,6 +288,27 @@
       a.download = "monthly-autodraft.csv";
       a.click();
     }
+
+    document.getElementById("csv-upload").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const text = event.target.result;
+        const lines = text.trim().split("\n").slice(1); // skip header
+        allExpenses = {};
+        for (const line of lines) {
+          const [day, name, amount] = line.split(",");
+          const d = parseInt(day);
+          if (!allExpenses[d]) allExpenses[d] = [];
+          allExpenses[d].push({ name, amount });
+        }
+        saveExpenses();
+        location.reload();
+      };
+      reader.readAsText(file);
+    });
 
     function updateRow(day, row) {
       const expenses = allExpenses[day] || [];
