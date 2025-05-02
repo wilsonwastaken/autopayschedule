@@ -216,6 +216,164 @@
   </style>
 </head>
 <body>
-  <!-- Body content stays the same as before -->
+  <div class="container">
+    <div class="title-box">
+      <h1>Monthly Auto-Draft Schedule</h1>
+    </div>
+    <table id="calendar">
+      <tr><th>Date</th><th>Expenses</th><th>Total</th></tr>
+    </table>
+    <div class="monthly-total" id="monthlyTotal"></div>
+    <button class="export-button" onclick="exportData()">Export to CSV</button>
+  </div>
+
+  <script>
+    const today = new Date().getDate();
+    const calendar = document.getElementById("calendar");
+    const totalDisplay = document.getElementById("monthlyTotal");
+    let allExpenses = JSON.parse(localStorage.getItem("expensesByDay")) || {};
+    let totalMonth = 0;
+
+    function saveExpenses() {
+      localStorage.setItem("expensesByDay", JSON.stringify(allExpenses));
+    }
+
+    function exportData() {
+      let csv = "Day,Name,Amount\n";
+      for (let d = 1; d <= 31; d++) {
+        const entries = allExpenses[d] || [];
+        for (const e of entries) {
+          csv += `${d},${e.name},${e.amount}\n`;
+        }
+      }
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "monthly-autodraft.csv";
+      a.click();
+    }
+
+    function updateRow(day, row) {
+      const expenses = allExpenses[day] || [];
+      const summaryCell = row.cells[1];
+      const totalCell = row.cells[2];
+      summaryCell.innerHTML = '';
+      totalCell.innerHTML = '';
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "summary-container";
+
+      const summaryRow = document.createElement("div");
+      summaryRow.className = "summary-row";
+
+      const dropdown = document.createElement("div");
+      dropdown.className = "dropdown";
+
+      if (expenses.length > 0) {
+        const summary = document.createElement("div");
+        summary.className = "expense-summary";
+        summary.textContent = expenses.map(e => e.name).slice(0, 2).join(", ") + (expenses.length > 2 ? ", ..." : "");
+
+        expenses.forEach(e => {
+          const row = document.createElement("div");
+          row.className = "dropdown-row";
+
+          const name = document.createElement("span");
+          name.textContent = e.name;
+
+          const amt = document.createElement("span");
+          amt.textContent = `$${e.amount}`;
+
+          row.appendChild(name);
+          row.appendChild(amt);
+          dropdown.appendChild(row);
+        });
+
+        summary.onclick = () => {
+          dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+          addForm.style.display = dropdown.style.display;
+        };
+
+        summaryRow.appendChild(summary);
+      }
+
+      const plusBtn = document.createElement("button");
+      plusBtn.className = "plus-button";
+      plusBtn.textContent = "+";
+
+      const addForm = document.createElement("div");
+      addForm.className = "add-form";
+
+      const nameInput = document.createElement("input");
+      nameInput.placeholder = "Expense name";
+      nameInput.size = 10;
+
+      const amtInput = document.createElement("input");
+      amtInput.placeholder = "$";
+      amtInput.size = 6;
+      amtInput.type = "number";
+
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "Add";
+
+      addBtn.onclick = () => {
+        const name = nameInput.value.trim();
+        const amount = parseFloat(amtInput.value);
+        if (!name || isNaN(amount)) return;
+        if (!allExpenses[day]) allExpenses[day] = [];
+        allExpenses[day].push({ name, amount });
+        saveExpenses();
+        location.reload();
+      };
+
+      plusBtn.onclick = () => {
+        dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+        addForm.style.display = dropdown.style.display;
+      };
+
+      addForm.appendChild(nameInput);
+      addForm.appendChild(amtInput);
+      addForm.appendChild(addBtn);
+
+      summaryRow.appendChild(plusBtn);
+      wrapper.appendChild(summaryRow);
+      wrapper.appendChild(dropdown);
+      wrapper.appendChild(addForm);
+      summaryCell.appendChild(wrapper);
+
+      const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      totalMonth += total;
+      if (total > 0) {
+        const totalEl = document.createElement("div");
+        totalEl.className = "total";
+        totalEl.textContent = `$${total}`;
+        totalCell.appendChild(totalEl);
+      }
+    }
+
+    let todayRow;
+    for (let day = 1; day <= 31; day++) {
+      const row = calendar.insertRow();
+      if (day === today) {
+        row.classList.add("today");
+        todayRow = row;
+      }
+
+      const cellDate = row.insertCell();
+      const dateBubble = document.createElement("div");
+      dateBubble.className = "date-bubble";
+      dateBubble.textContent = day;
+      cellDate.appendChild(dateBubble);
+
+      row.insertCell();
+      row.insertCell();
+
+      updateRow(day, row);
+    }
+
+    totalDisplay.textContent = `Total This Month: $${totalMonth}`;
+    if (todayRow) todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  </script>
 </body>
 </html>
