@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monthly Auto-Draft</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9fb;
+      margin: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+    }
+    tr:nth-child(even) {
+      background-color: #f0f8ff;
+    }
+    .today {
+      background-color: #d0eaff !important;
+      font-weight: bold;
+    }
+    .expense-summary {
+      background-color: #b4e4ff;
+      padding: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .total {
+      background-color: #c5f2d2;
+      padding: 0.5rem;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block;
+    }
+    .dropdown {
+      margin-top: 0.5rem;
+      background: #b4e4ff;
+      border-radius: 8px;
+      padding: 0.5rem;
+      display: none;
+    }
+    .dropdown p {
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Monthly Auto-Draft by Date</h1>
+  <table id="calendar">
+    <tr><th>Date</th><th>Expenses</th><th>Total</th></tr>
+  </table>
+
+  <script>
+    const expenses = [
+      { name: "Mortgage", amount: 3400, day: 1 },
+      { name: "Dance Center", amount: 220, day: 2 },
+      { name: "Gymnastics", amount: 145, day: 2 },
+      { name: "Mortgage", amount: 3400, day: 3 }
+    ];
+
+    const today = new Date().getDate();
+    const calendar = document.getElementById("calendar");
+
+    for (let day = 1; day <= 31; day++) {
+      const row = calendar.insertRow();
+      if (day === today) row.classList.add("today");
+
+      const cellDate = row.insertCell();
+      cellDate.textContent = day;
+
+      const cellSummary = row.insertCell();
+      const dayExpenses = expenses.filter(e => e.day === day);
+      const total = dayExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+      if (dayExpenses.length > 0) {
+        const summary = document.createElement("div");
+        summary.className = "expense-summary";
+        summary.textContent = dayExpenses.map(e => e.name).slice(0, 2).join(", ") + (dayExpenses.length > 2 ? ", ..." : "");
+        
+        const dropdown = document.createElement("div");
+        dropdown.className = "dropdown";
+        dayExpenses.forEach(e => {
+          const p = document.createElement("p");
+          p.textContent = `${e.name} $${e.amount}`;
+          dropdown.appendChild(p);
+        });
+
+        summary.onclick = () => {
+          dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+        };
+
+        cellSummary.appendChild(summary);
+        cellSummary.appendChild(dropdown);
+      }
+
+      const cellTotal = row.insertCell();
+      if (total > 0) {
+        const totalEl = document.createElement("div");
+        totalEl.className = "total";
+        totalEl.textContent = `Total today - $${total}`;
+        cellTotal.appendChild(totalEl);
+      }
+    }
+  </script>
+</body>
+</html>
