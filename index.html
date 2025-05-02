@@ -8,6 +8,13 @@
       font-family: sans-serif;
       background: #f9f9fb;
       margin: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+      width: 70%;
     }
     h1 {
       text-align: center;
@@ -44,7 +51,7 @@
       font-weight: bold;
       display: inline-block;
     }
-    .dropdown {
+    .dropdown, .add-form {
       margin-top: 0.5rem;
       background: #b4e4ff;
       border-radius: 8px;
@@ -54,8 +61,14 @@
     .dropdown p {
       margin: 0.25rem 0;
     }
-    button {
-      margin-top: 0.25rem;
+    .add-form input {
+      margin: 0.25rem;
+      padding: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    .add-form button {
       padding: 0.3rem 0.5rem;
       border: none;
       background: #007bff;
@@ -64,20 +77,41 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-    input {
-      margin: 0.25rem;
-      padding: 0.3rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 0.9rem;
+    .plus-button {
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: #007bff;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+      }
+      body {
+        margin: 1rem;
+      }
+      table {
+        font-size: 1.1rem;
+      }
+      .expense-summary, .total, .add-form input, .add-form button {
+        font-size: 1.1rem;
+      }
+      .plus-button {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Monthly Auto-Draft by Date</h1>
-  <table id="calendar">
-    <tr><th>Date</th><th>Expenses</th><th>Total</th></tr>
-  </table>
+  <div class="container">
+    <h1>Monthly Auto-Draft by Date</h1>
+    <table id="calendar">
+      <tr><th>Date</th><th>Expenses</th><th>Total</th></tr>
+    </table>
+  </div>
 
   <script>
     const today = new Date().getDate();
@@ -95,6 +129,7 @@
       summaryCell.innerHTML = '';
       totalCell.innerHTML = '';
 
+      // Summary text
       if (expenses.length > 0) {
         const summary = document.createElement("div");
         summary.className = "expense-summary";
@@ -116,6 +151,7 @@
         summaryCell.appendChild(dropdown);
       }
 
+      // Total
       const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
       if (total > 0) {
         const totalEl = document.createElement("div");
@@ -124,7 +160,15 @@
         totalCell.appendChild(totalEl);
       }
 
-      // Add form to summaryCell
+      // + Button to reveal add form
+      const plusBtn = document.createElement("button");
+      plusBtn.className = "plus-button";
+      plusBtn.textContent = "+";
+      summaryCell.appendChild(plusBtn);
+
+      const addForm = document.createElement("div");
+      addForm.className = "add-form";
+
       const nameInput = document.createElement("input");
       nameInput.placeholder = "Expense name";
       nameInput.size = 12;
@@ -135,7 +179,7 @@
       amtInput.type = "number";
 
       const addBtn = document.createElement("button");
-      addBtn.textContent = "+ Add Expense";
+      addBtn.textContent = "Add";
 
       addBtn.onclick = () => {
         const name = nameInput.value.trim();
@@ -147,12 +191,17 @@
         updateRow(day, row);
       };
 
-      summaryCell.appendChild(document.createElement("br"));
-      summaryCell.appendChild(nameInput);
-      summaryCell.appendChild(amtInput);
-      summaryCell.appendChild(addBtn);
+      addForm.appendChild(nameInput);
+      addForm.appendChild(amtInput);
+      addForm.appendChild(addBtn);
+      summaryCell.appendChild(addForm);
+
+      plusBtn.onclick = () => {
+        addForm.style.display = addForm.style.display === "none" ? "block" : "none";
+      };
     }
 
+    // Render all 31 days
     for (let day = 1; day <= 31; day++) {
       const row = calendar.insertRow();
       if (day === today) row.classList.add("today");
@@ -160,8 +209,8 @@
       const cellDate = row.insertCell();
       cellDate.textContent = day;
 
-      row.insertCell(); // Summary
-      row.insertCell(); // Total
+      row.insertCell(); // Expenses cell
+      row.insertCell(); // Total cell
 
       updateRow(day, row);
     }
