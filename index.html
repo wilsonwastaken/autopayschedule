@@ -272,7 +272,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 0 30px #a3f3ff55;
-  font-family: 'American Typewriter', 'Courier New', monospace;
+  font-family: 'helvetica', monospace;
   font-size: 1rem;
   line-height: 1.6;
   max-width: 600px;
@@ -282,7 +282,7 @@
 ">
   Your data stays private and lives in your browser.<br>
   Clear your browser = lose your data.<br>
-  Export to CSV to save a copy!
+  Export to CSV to save a copy.
 </div>
   <div class="container">
     <table id="calendar">
@@ -439,7 +439,7 @@
       updateRow(day, row);
     }
 
-    totalDisplay.textContent = `Total This Month: $${totalMonth}`;
+    totalDisplay.textContent = `Month Total: $${totalMonth}`;
     if (todayRow) todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
   </script>
 </body>
