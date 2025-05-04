@@ -1,2 +1,2 @@
-# autodraft.today
+# AutoPaySchedule
 simple daily autodraft tracker
